@@ -68,7 +68,7 @@ def get_api_answer(current_timestamp):
     except Exception as error:
         if api_answer.status_code != 200:
             logger.error(f'{ENDPOINT} не доступен.{error}')
-            raise Exception (f'API не доступен')
+            raise Exception(f'API не доступен')
     return api_answer.json()
 
 
