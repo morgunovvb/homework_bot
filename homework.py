@@ -40,6 +40,7 @@ HOMEWORK_STATUSES = {
     'rejected': 'Работа проверена: у ревьюера есть замечания.'
 }
 
+
 def send_message(bot, message):
     """Отправляет сообщение в Telegram чат."""
     bot = telegram.Bot(token=TELEGRAM_TOKEN)
@@ -49,6 +50,7 @@ def send_message(bot, message):
         logger.error(f'Сообщение не отправлено "{message}"')
     else:
         logger.info(f'Сообщение успешно отправлено "{message}"')
+
 
 def get_api_answer(current_timestamp):
     """Делает запрос к API."""
@@ -63,8 +65,9 @@ def get_api_answer(current_timestamp):
     except Exception as error:
         if api_answer.status_code != 200:
             logger.error(f'{ENDPOINT} не доступен.{error}')
-            raise Exception(f'API не доступен')
+            raise Exception("invalid response")
     return api_answer.json()
+
 
 def check_response(response):
     """Проверяет ответ API на корректность."""
@@ -78,6 +81,7 @@ def check_response(response):
         logger.error('Неверный список работ.')
         raise TypeError('Неверный список работ.')
     return homeworks
+
 
 def parse_status(homework):
     """Извлекает из инф о конкретной домашней работе статус этой работы."""
@@ -96,6 +100,7 @@ def parse_status(homework):
     if homework_status in HOMEWORK_STATUSES:
         return (f'Статус изменился {homework_name},{verdict}')
 
+
 def check_tokens():
     """Проверяет доступность переменных окружения."""
     test_tokens = {
@@ -108,6 +113,7 @@ def check_tokens():
             logger.critical(f'Отсутствует необходиый токен {key}')
             return False
         return True
+
 
 def main():
     """Основная логика работы бота."""
@@ -130,6 +136,6 @@ def main():
         else:
             time.sleep(RETRY_TIME)
 
+
 if __name__ == '__main__':
     main()
- 
