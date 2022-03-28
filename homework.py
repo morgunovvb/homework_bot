@@ -31,7 +31,7 @@ HOMEWORK_STATUSES = {
 def send_message(bot, message):
     """Отсылаем сообщение."""
     logging.info(f'message send {message}')
-    return bot.send_message(chat_id=CHAT_ID, text=message)
+    return bot.send_message(TELEGRAM_CHAT_ID=TELEGRAM_CHAT_ID, text=message)
 
 
 def get_api_answer(url, current_timestamp):
