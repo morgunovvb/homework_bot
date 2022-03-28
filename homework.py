@@ -90,7 +90,7 @@ def parse_status(homework):
         homework_status = homework.get('status')
     except KeyError as error:
         logger.error(f'{error} не верный ответ')
-        raise KeyError('Статус задания не изменился')
+        raise KeyError('Статус работы не документирован')
     if homework_status not in HOMEWORK_STATUSES:
         logger.error('Работа не проверена')
         raise KeyError('Ваша работа еще не проверена')
