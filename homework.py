@@ -51,23 +51,21 @@ def send_message(bot, message):
     else:
         logger.info(f'Сообщение успешно отправлено "{message}"')
 
-
 def get_api_answer(current_timestamp):
-    """Делает запрос к API."""
     timestamp = current_timestamp or int(time.time())
     params = {'from_date': timestamp}
     try:
-        api_answer = requests.get(
-            ENDPOINT,
-            headers=HEADERS,
-            params=params,
+        homeworks = requests.get(ENDPOINT, params=params)
+    except Exceptions as error:
+        message = f'Другая ошибка {error}'
+        logger.error(message)
+    if homeworks.status_code == 200:
+        return homeworks.json()
+    else:
+        raise Exception(
+            f'Сбой в работе программы: Эндпоинт {ENDPOINT} не доступен.'
+            f'Код ответа API {homeworks.status_code}'
         )
-    except Exception as error:
-        if api_answer.status_code != 200:
-            logger.error(f'{ENDPOINT} не доступен.{error}')
-            raise Exception("invalid response")
-    return api_answer.json()
-
 
 def check_response(response):
     """Проверяет ответ API на корректность."""
