@@ -6,7 +6,7 @@ import os
 from dotenv import load_dotenv
 from logging.handlers import RotatingFileHandler
 
-load_dotenv()
+load_dotenv() #test
 
 logging.basicConfig(
     level=logging.INFO,
