@@ -42,7 +42,9 @@ HOMEWORK_STATUSES = {
 
 
 def send_message(bot, message):
-    """Отправляет сообщение в Telegram чат."""
+    '''Функция send_message() отправляет сообщение в Telegram чат,
+    определяемый переменной окружения TELEGRAM_CHAT_ID.
+    Принимает на вход два параметра: экземпляр класса Bot и строку с текстом сообщения.'''
     bot = telegram.Bot(token=TELEGRAM_TOKEN)
     try:
         bot.send_message(TELEGRAM_CHAT_ID, message)
