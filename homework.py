@@ -9,12 +9,12 @@ from logging.handlers import RotatingFileHandler
 load_dotenv() #  test3
 
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.DEBUG,
     filename='program.log',
     format='%(asctime)s, %(levelname)s, %(message)s, %(name)s'
 )
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 handler = RotatingFileHandler(
     'my_logger.log', maxBytes=50000000, backupCount=5
 )
