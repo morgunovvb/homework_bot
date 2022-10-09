@@ -88,7 +88,7 @@ def parse_status(homeworks):
     """Извлекает из инф о конкретной домашней работе статус этой работы."""
     try:
         homework_name = homeworks.get('homework_name')
-        homework_status = homeworks.get('status')
+        homework_status = homeworks.get('homework_status')
     except KeyError as error:
         logger.error(f'{error} не верный ответ')
         raise KeyError('Статус работы не документирован')
@@ -99,7 +99,7 @@ def parse_status(homeworks):
     verdict = HOMEWORK_STATUSES.get('homework_status')
 
     if homework_status in HOMEWORK_STATUSES:
-        return (f'Статус изменился {homework_name},{verdict}')
+        return f'Изменился статус проверки работы "{homework_name}". {verdict}'
 
 
 def check_tokens():
