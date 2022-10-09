@@ -6,7 +6,7 @@ import os
 from dotenv import load_dotenv
 from logging.handlers import RotatingFileHandler
 
-load_dotenv()  # test 
+load_dotenv()
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -61,7 +61,7 @@ def get_api_answer(current_timestamp):
     except Exception as error:
         message = f'Другая ошибка {error}'
         logger.error(message)
-    if ho.status_code == 200:
+    if homeworks.status_code == 200:
         return homeworks.json()
     else:
         raise Exception(
