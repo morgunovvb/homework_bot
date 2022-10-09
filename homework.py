@@ -61,7 +61,7 @@ def get_api_answer(current_timestamp):
     except Exception as error:
         message = f'Другая ошибка {error}'
         logger.error(message)
-    if homeworks.status_code == 200:
+    if ho.status_code == 200:
         return homeworks.json()
     else:
         raise Exception(
@@ -84,11 +84,11 @@ def check_response(response):
     return homeworks
 
 
-def parse_status(homework):
+def parse_status(homeworks):
     """Извлекает из инф о конкретной домашней работе статус этой работы."""
     try:
-        homework_name = homework.get('homework_name')
-        homework_status = homework.get('status')
+        homework_name = homeworks.get('homework_name')
+        homework_status = homeworks.get('status')
     except KeyError as error:
         logger.error(f'{error} не верный ответ')
         raise KeyError('Статус работы не документирован')
