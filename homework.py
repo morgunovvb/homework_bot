@@ -96,7 +96,7 @@ def parse_status(homeworks):
         logger.error('Работа не проверена')
         raise KeyError('Ваша работа еще не проверена')
 
-    verdict = HOMEWORK_STATUSES.get(homework_status)
+    verdict = HOMEWORK_STATUSES.get('homework_status')
 
     if homework_status in HOMEWORK_STATUSES:
         return (f'Статус изменился {homework_name},{verdict}')
