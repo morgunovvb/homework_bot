@@ -1,5 +1,5 @@
 # chat-bot
-"""tg-bot"""
+"""tg-bot."""
 import logging
 import time
 import os
@@ -112,13 +112,13 @@ def check_tokens():
     }
     for key, value in test_tokens.items():
         if not value['PRACTICUM_TOKEN'] in test_tokens:
-            logger.info(f'Отсутствует необходиый токен "PRACTICUM_TOKEN".')
+            logger.info('Отсутствует необходиый токен "PRACTICUM_TOKEN".')
             return False
         if not value['TELEGRAM_TOKEN'] in test_tokens:
-            logger.info(f'Отсутствует необходиый токен "TELEGRAM_TOKEN".')
+            logger.info('Отсутствует необходиый токен "TELEGRAM_TOKEN".')
             return False
         if not value['TELEGRAM_CHAT_ID'] in test_tokens:
-            logger.info(f'Отсутствует необходиый токен "TELEGRAM_CHAT_ID".')
+            logger.info('Отсутствует необходиый токен "TELEGRAM_CHAT_ID".')
             return False
         return True
 
