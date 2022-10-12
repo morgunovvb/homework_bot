@@ -1,5 +1,5 @@
 # chat-bot
-"""tg-bot"""
+"""tg-bot."""
 import logging
 import time
 import os
@@ -101,7 +101,6 @@ def parse_status(homework):
         raise Exception(f'Неизвестный статус работы: {homework_status}.')
     verdict = HOMEWORK_STATUSES[homework_status]
     return f'Изменился статус проверки работы "{homework_name}". {verdict}.'
-
 
 
 def check_tokens():
