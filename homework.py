@@ -20,7 +20,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 handler = RotatingFileHandler(
-    'my_logger.log', maxBytes=50000000, backupCount=5
+    'my_logger.log', maxBytes=10000000, backupCount=5
 )
 logger.addHandler(handler)
 formatter = logging.Formatter(
@@ -105,22 +105,17 @@ def parse_status(homework):
 
 def check_tokens():
     """Проверяет доступность переменных окружения."""
-    test_tokens = {
-        'PRACTICUM_TOKEN': PRACTICUM_TOKEN,
-        'TELEGRAM_TOKEN': TELEGRAM_TOKEN,
-        'TELEGRAM_CHAT_ID': TELEGRAM_CHAT_ID,
-    }
-    for key, value in test_tokens.items():
-        if not value['PRACTICUM_TOKEN'] in test_tokens:
-            logger.info('Отсутствует необходиый токен "PRACTICUM_TOKEN".')
-            return False
-        if not value['TELEGRAM_TOKEN'] in test_tokens:
-            logger.info('Отсутствует необходиый токен "TELEGRAM_TOKEN".')
-            return False
-        if not value['TELEGRAM_CHAT_ID'] in test_tokens:
-            logger.info('Отсутствует необходиый токен "TELEGRAM_CHAT_ID".')
-            return False
+    if all([PRACTICUM_TOKEN, TELEGRAM_TOKEN, TELEGRAM_CHAT_ID]):
         return True
+    elif PRACTICUM_TOKEN is None:
+        logger.info('Отсутствует PRACTICUM_TOKEN')
+        return False
+    elif TELEGRAM_TOKEN is None:
+        logger.info('Отсутствует TELEGRAM_TOKEN')
+        return False
+    elif TELEGRAM_CHAT_ID is None:
+        logger.info('Отсутствует TELEGRAM_CHAT_ID')
+        return False
 
 
 def main():
