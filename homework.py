@@ -1,10 +1,14 @@
+# chat-bot
+"""tg-bot"""
 import logging
-import requests
-import telegram
 import time
 import os
-from dotenv import load_dotenv
 from logging.handlers import RotatingFileHandler
+from http import HTTPStatus
+import requests
+import telegram
+from dotenv import load_dotenv
+
 
 load_dotenv()
 
@@ -30,7 +34,7 @@ PRACTICUM_TOKEN = os.getenv('PRACTICUM_TOKEN')
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
 
-RETRY_TIME = 60
+RETRY_TIME = 600
 ENDPOINT = 'https://practicum.yandex.ru/api/user_api/homework_statuses/'
 HEADERS = {'Authorization': f'OAuth {PRACTICUM_TOKEN}'}
 
@@ -47,9 +51,9 @@ def send_message(bot, message):
     try:
         bot.send_message(TELEGRAM_CHAT_ID, message)
     except telegram.TelegramError():
-        logger.error(f'Сообщение не отправлено "{message}"')
+        logger.error(f'Сообщение не отправлено "{message}".')
     else:
-        logger.info(f'Сообщение успешно отправлено "{message}"')
+        logger.info(f'Сообщение успешно отправлено "{message}".')
 
 
 def get_api_answer(current_timestamp):
@@ -58,26 +62,27 @@ def get_api_answer(current_timestamp):
     params = {'from_date': timestamp}
     try:
         homeworks = requests.get(ENDPOINT, headers=HEADERS, params=params)
-    except Exception as error:
-        message = f'Другая ошибка {error}'
+    except requests.ConnectionError as error:
+        message = f'Другая ошибка {error}.'
         logger.error(message)
-    if homeworks.status_code == 200:
+    if homeworks.status_code == HTTPStatus.OK:
         return homeworks.json()
-    else:
-        raise Exception(
-            f'Сбой в работе программы: Эндпоинт {ENDPOINT} не доступен.'
-            f'Код ответа API {homeworks.status_code}'
-        )
+    raise Exception(
+        f'Сбой в работе программы: Эндпоинт {ENDPOINT} не доступен.'
+        f'Код ответа API {homeworks.status_code}.'
+    )
 
 
 def check_response(response):
     """Проверяет ответ API на корректность."""
-    try:
-        homeworks = response['homeworks']
-    except KeyError as error:
-        raise KeyError(f'{error} не верный ответ')
+    homeworks = response['homeworks']
+    if not isinstance(response, dict):
+        logger.error('Ответ API тип данных не "словарь".')
+        raise TypeError('Ответ API тип данных не "словарь".')
+    if 'homeworks' not in dict(response):
+        raise KeyError('Отсутствует ключ "homeworks" в ответе API.')
     if not homeworks:
-        logger.debug('Статус не изменился')
+        logger.debug('Статус не изменился.')
     if not isinstance(homeworks, list):
         logger.error('Неверный список работ.')
         raise TypeError('Неверный список работ.')
@@ -87,15 +92,16 @@ def check_response(response):
 def parse_status(homework):
     """Получаем информацию о конкретной домашней работе."""
     if 'homework_name' not in homework:
-        raise KeyError('Отсутствует ключ "homework_name" в ответе API')
+        raise KeyError('Отсутствует ключ "homework_name" в ответе API.')
     if 'status' not in homework:
-        raise Exception('Отсутствует ключ "status" в ответе API')
+        raise KeyError('Отсутствует ключ "status" в ответе API.')
     homework_name = homework['homework_name']
     homework_status = homework['status']
     if homework_status not in HOMEWORK_STATUSES:
-        raise Exception(f'Неизвестный статус работы: {homework_status}')
+        raise Exception(f'Неизвестный статус работы: {homework_status}.')
     verdict = HOMEWORK_STATUSES[homework_status]
-    return f'Изменился статус проверки работы "{homework_name}". {verdict}'
+    return f'Изменился статус проверки работы "{homework_name}". {verdict}.'
+
 
 
 def check_tokens():
@@ -106,7 +112,13 @@ def check_tokens():
         'TELEGRAM_CHAT_ID': TELEGRAM_CHAT_ID,
     }
     for key, value in test_tokens.items():
-        if value is None:
+        if not value[PRACTICUM_TOKEN] in test_tokens:
+            logger.critical(f'Отсутствует необходиый токен {key}')
+            return False
+        if not value[TELEGRAM_TOKEN] in test_tokens:
+            logger.critical(f'Отсутствует необходиый токен {key}')
+            return False
+        if not value[TELEGRAM_CHAT_ID] in test_tokens:
             logger.critical(f'Отсутствует необходиый токен {key}')
             return False
         return True
@@ -127,10 +139,9 @@ def main():
             time.sleep(RETRY_TIME)
 
         except Exception as error:
-            message = f'Сбой в работе программы: {error}'
+            message = f'Сбой в работе программы: {error}.'
             send_message(TELEGRAM_CHAT_ID, message)
-            time.sleep(RETRY_TIME)
-        else:
+        finally:
             time.sleep(RETRY_TIME)
 
 
