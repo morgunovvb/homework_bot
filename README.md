@@ -1,2 +1,2 @@
 # homework_bot
-python telegram bot (bot-assist)
+python telegram bot (bot-assist for)
