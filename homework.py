@@ -20,7 +20,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 handler = RotatingFileHandler(
-    'my_logger.log', maxBytes=50000000, backupCount=5
+    'my_logger.log', maxBytes=10485760, backupCount=5
 )
 logger.addHandler(handler)
 formatter = logging.Formatter(
@@ -34,7 +34,7 @@ PRACTICUM_TOKEN = os.getenv('PRACTICUM_TOKEN')
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
 
-RETRY_TIME = 600
+TELEGRAM_RETRY_TIME = 600
 ENDPOINT = 'https://practicum.yandex.ru/api/user_api/homework_statuses/'
 HEADERS = {'Authorization': f'OAuth {PRACTICUM_TOKEN}'}
 
@@ -50,7 +50,7 @@ def send_message(bot, message):
     bot = telegram.Bot(token=TELEGRAM_TOKEN)
     try:
         bot.send_message(TELEGRAM_CHAT_ID, message)
-    except telegram.TelegramError():
+    except telegram.error.TelegramError():
         logger.error(f'Сообщение не отправлено "{message}".')
     else:
         logger.info(f'Сообщение успешно отправлено "{message}".')
@@ -105,17 +105,16 @@ def parse_status(homework):
 
 def check_tokens():
     """Проверяет доступность переменных окружения."""
-    if all([PRACTICUM_TOKEN, TELEGRAM_TOKEN, TELEGRAM_CHAT_ID]):
-        return True
-    elif PRACTICUM_TOKEN is None:
-        logger.info('Отсутствует PRACTICUM_TOKEN')
-        return False
-    elif TELEGRAM_TOKEN is None:
-        logger.info('Отсутствует TELEGRAM_TOKEN')
-        return False
-    elif TELEGRAM_CHAT_ID is None:
-        logger.info('Отсутствует TELEGRAM_CHAT_ID')
-        return False
+    test_tokens = {
+        'PRACTICUM_TOKEN': PRACTICUM_TOKEN,
+        'TELEGRAM_TOKEN': TELEGRAM_TOKEN,
+        'TELEGRAM_CHAT_ID': TELEGRAM_CHAT_ID,
+    }
+    for token in test_tokens:
+        if not all:
+            logger.critical(f'Отсутствует необходимый токен {token}')
+            return False
+    return True
 
 
 def main():
@@ -130,13 +129,13 @@ def main():
                 verdict = parse_status(homework)
                 send_message(bot, verdict)
             current_timestamp = response['current_date']
-            time.sleep(RETRY_TIME)
+            time.sleep(TELEGRAM_RETRY_TIME)
 
         except Exception as error:
             message = f'Сбой в работе программы: {error}.'
             send_message(TELEGRAM_CHAT_ID, message)
         finally:
-            time.sleep(RETRY_TIME)
+            time.sleep(TELEGRAM_RETRY_TIME)
 
 
 if __name__ == '__main__':
