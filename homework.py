@@ -110,7 +110,10 @@ def check_tokens():
         'TELEGRAM_TOKEN': TELEGRAM_TOKEN,
         'TELEGRAM_CHAT_ID': TELEGRAM_CHAT_ID,
     }
-    missing_tokens = [token for token, value in test_tokens.items() if not value]
+    missing_tokens = [
+        token for token,
+        value in test_tokens.items() if not value
+    ]
     if missing_tokens:
         logging.critical(
             f'Отсутствует необходимый токен: '
