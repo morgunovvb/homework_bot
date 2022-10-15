@@ -119,6 +119,7 @@ def check_tokens():
             f'Отсутствует необходимый токен: '
             f'{", ".join(missing_tokens)}'
         )
+        return False
     else:
         return True
 
@@ -135,7 +136,6 @@ def main():
                 verdict = parse_status(homework)
                 send_message(bot, verdict)
             current_timestamp = response['current_date']
-            time.sleep(TELEGRAM_RETRY_TIME)
 
         except Exception as error:
             message = f'Сбой в работе программы: {error}.'
@@ -144,5 +144,7 @@ def main():
             time.sleep(TELEGRAM_RETRY_TIME)
 
 
-if __name__ == '__main__':
-    main()
+#Yes! I did it! It seems:)
+if __name__ == '__main__': 
+    if check_tokens():
+        main()
