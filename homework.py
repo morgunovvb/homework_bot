@@ -144,7 +144,6 @@ def main():
             time.sleep(TELEGRAM_RETRY_TIME)
 
 
-# Yes! I did it! It seems:)
 if __name__ == '__main__':
     if check_tokens():
         main()
